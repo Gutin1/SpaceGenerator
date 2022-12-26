@@ -47,22 +47,23 @@ class AsteroidPopulator() : BlockPopulator() {
 			//Random coordinate generation.
 			val asteroidX = asteroidRandom.nextInt(0, 15) + worldX
 			val asteroidZ = asteroidRandom.nextInt(0, 15) + worldZ
-			val asteroidY = asteroidRandom.nextInt(worldInfo.minHeight, worldInfo.maxHeight)
-
-			val asteroidLoc = BlockPos(asteroidX, asteroidY, asteroidZ)
+			val asteroidY = asteroidRandom.nextInt(worldInfo.minHeight + 10, worldInfo.maxHeight - 10)
 
 			// random number out of 100, chance of asteroid's generation. For use in selection.
 			val chance = abs((abs(BlockPos(asteroidX, asteroidY, asteroidZ).hashCode()) % 200.0) - 100.0)
 
 			// Selects some asteroids that are generated. Allows for densities of 0<X<1 asteroids per chunk.
-			if (chance < (chunkDensity * 10)
-			) {
-				val asteroid = generateAsteroid(worldInfo, asteroidLoc, asteroidRandom)
+			if (chance > (chunkDensity * 10)) continue
 
-				if (asteroid.size + asteroidY > worldInfo.maxHeight) continue
+			val asteroidLoc = BlockPos(asteroidX, asteroidY, asteroidZ)
 
-				placeAsteroid(worldInfo, chunkX, chunkZ, limitedRegion, asteroid)
-			}
+			val asteroid = generateAsteroid(worldInfo, asteroidLoc, asteroidRandom)
+
+			if (asteroid.size + asteroidY > worldInfo.maxHeight) continue
+
+			if (asteroidY - asteroid.size < worldInfo.minHeight) continue
+
+			placeAsteroid(worldInfo, chunkX, chunkZ, limitedRegion, asteroid)
 		}
 	}
 

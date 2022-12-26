@@ -11,8 +11,6 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8")) // im not sure this is needed
-
     paperDevBundle("1.19.3-R0.1-SNAPSHOT")
 
     implementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
@@ -21,9 +19,13 @@ dependencies {
 
 tasks.reobfJar {
     outputJar.set(file(rootProject.projectDir.absolutePath + "/build/SpaceGenerator.jar"))
+    dependsOn("shadowJar")
 }
 
-tasks.build { dependsOn("reobfJar") }
+tasks.build {
+    dependsOn(":reobfJar")
+    dependsOn("shadowJar")
+}
 
 tasks.compileKotlin {
     kotlinOptions { jvmTarget = "17" }

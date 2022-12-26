@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server.generation
+package gutin.spacegenerator.generation
 
 import org.bukkit.block.Biome
 import org.bukkit.generator.BiomeProvider

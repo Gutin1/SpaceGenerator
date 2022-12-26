@@ -1,7 +1,7 @@
 package gutin.spacegenerator
 
 import gutin.spacegenerator.generation.SpaceChunkGenerator
-import net.horizonsend.ion.server.generation.SpaceBiomeProvider
+import gutin.spacegenerator.generation.SpaceBiomeProvider
 import org.bukkit.generator.BiomeProvider
 import org.bukkit.generator.ChunkGenerator
 import org.bukkit.plugin.java.JavaPlugin
@@ -14,16 +14,11 @@ class SpaceGenerator : JavaPlugin() {
         lateinit var SpaceGenerator: SpaceGenerator private set
     }
 
-    override fun onLoad() {
-//        Registration.init()
-    }
+    override fun onLoad() {}
 
-    override fun onEnable() {
-        println("Enabled SPACEGENERATOR")
-    }
+    override fun onEnable() {}
 
-    override fun onDisable() {
-    }
+    override fun onDisable() {}
 
     override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator? {
         return SpaceChunkGenerator()
