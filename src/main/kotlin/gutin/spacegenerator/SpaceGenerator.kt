@@ -1,5 +1,7 @@
 package gutin.spacegenerator
 
+import co.aikar.commands.PaperCommandManager
+import gutin.spacegenerator.commands.AsteroidCommand
 import gutin.spacegenerator.generation.SpaceChunkGenerator
 import gutin.spacegenerator.generation.SpaceBiomeProvider
 import org.bukkit.generator.BiomeProvider
@@ -16,7 +18,9 @@ class SpaceGenerator : JavaPlugin() {
 
     override fun onLoad() {}
 
-    override fun onEnable() {}
+    override fun onEnable() {
+        PaperCommandManager(this).registerCommand(AsteroidCommand())
+    }
 
     override fun onDisable() {}
 

@@ -8,6 +8,8 @@ repositories {
     mavenCentral()
 
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://hub.spigotmc.org/nexus/content/groups/public/")
 }
 
 dependencies {
@@ -15,6 +17,7 @@ dependencies {
 
     implementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
+    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 }
 
 tasks.reobfJar {

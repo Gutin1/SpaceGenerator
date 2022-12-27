@@ -56,7 +56,7 @@ class AsteroidPopulator() : BlockPopulator() {
 
 			val asteroidLoc = BlockPos(asteroidX, asteroidY, asteroidZ)
 
-			val asteroid = generateAsteroid(worldInfo, asteroidLoc, asteroidRandom)
+			val asteroid = generateAsteroid(asteroidLoc, asteroidRandom)
 
 			if (asteroid.size + asteroidY > worldInfo.maxHeight) continue
 
@@ -66,7 +66,7 @@ class AsteroidPopulator() : BlockPopulator() {
 		}
 	}
 
-	private fun placeAsteroid(
+	fun placeAsteroid(
 		seed: Long,
 		chunkX: Int,
 		chunkZ: Int,
@@ -150,8 +150,8 @@ class AsteroidPopulator() : BlockPopulator() {
 
 	}
 
-	private fun generateAsteroid(worldInfo: WorldInfo, location: BlockPos, random: Random): Asteroid {
-		val noise = SimplexOctaveGenerator(Random(worldInfo.seed), 1)
+	fun generateAsteroid(location: BlockPos, random: Random): Asteroid {
+		val noise = SimplexOctaveGenerator(random, 1)
 
 		// Get material palette
 
