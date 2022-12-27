@@ -9,7 +9,6 @@ import org.bukkit.generator.ChunkGenerator
 import org.bukkit.generator.WorldInfo
 
 class SpaceChunkGenerator : ChunkGenerator() {
-
 	override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
 	}
 

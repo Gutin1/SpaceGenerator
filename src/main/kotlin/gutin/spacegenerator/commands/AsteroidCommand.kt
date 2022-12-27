@@ -44,8 +44,8 @@ class AsteroidCommand : BaseCommand() {
 
     @Suppress("unused")
     @CommandPermission("spacegenerator.regenerate")
-    @Subcommand("create custom asteroid")
-    @CommandCompletion("@nothing|size|index|octaves")
+    @Subcommand("create custom")
+    @CommandCompletion("size index octaves")
     fun onCreateCustom(sender: Player, size: Double, index: Int, octaves: Int) {
         val chunkPos = ChunkPos(sender.chunk.x, sender.chunk.z)
         val world = sender.world
@@ -78,7 +78,7 @@ class AsteroidCommand : BaseCommand() {
     }
 
     @Suppress("unused")
-    @Subcommand("create asteroid")
+    @Subcommand("create random")
     fun onCreateAsteroid(sender: Player) {
         val chunkPos = ChunkPos(sender.chunk.x, sender.chunk.z)
         val world = sender.world

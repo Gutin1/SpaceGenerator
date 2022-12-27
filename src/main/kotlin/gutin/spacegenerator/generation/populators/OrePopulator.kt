@@ -23,7 +23,6 @@ open class OrePopulator() : BlockPopulator() {
         configuration.blockPalettes.forEach { asteroidBlocks.addAll((it.materials.keys)) }
     }
 
-
     override fun populate(
 		worldInfo: WorldInfo,
 		random: Random,

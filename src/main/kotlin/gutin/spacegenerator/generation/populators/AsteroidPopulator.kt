@@ -17,8 +17,9 @@ import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.LimitedRegion
 import org.bukkit.generator.WorldInfo
 import org.bukkit.util.noise.SimplexOctaveGenerator
+import kotlin.math.floor
 
-class AsteroidPopulator() : BlockPopulator() {
+class AsteroidPopulator : BlockPopulator() {
 	// default asteroid configuration values
 	private val configuration: AsteroidConfiguration =
 		loadConfiguration(SpaceGenerator.SpaceGenerator.dataFolder.resolve("asteroids"), "asteroid_configuration.conf")
@@ -104,14 +105,16 @@ class AsteroidPopulator() : BlockPopulator() {
 					for (octave in 0..asteroid.octaves) {
 						noise.setScale(0.015 * (octave + 1.0).pow(2.25))
 
-						val offset = abs(noise.noise(
-							xDouble,
-							yDouble,
-							zDouble,
-							0.0,
-							1.0,
-							false
-						) * (2 / (octave + 1)) * (asteroid.size / 1.5))
+						val offset = abs(
+							noise.noise(
+								xDouble,
+								yDouble,
+								zDouble,
+								0.0,
+								1.0,
+								false
+							)
+						) * (asteroid.size / (octave + 1.0).pow(2.25))
 
 						fullNoise += offset
 					}
@@ -183,14 +186,16 @@ class AsteroidPopulator() : BlockPopulator() {
 					for (octave in 0..asteroid.octaves) {
 						noise.setScale(0.015 * (octave + 1.0).pow(2.25))
 
-						val offset = abs(noise.noise(
-							xDouble,
-							yDouble,
-							zDouble,
-							0.0,
-							1.0,
-							false
-						) * (2 / (octave + 1)) * (asteroid.size / 1.5))
+						val offset = abs(
+							noise.noise(
+								xDouble,
+								yDouble,
+								zDouble,
+								0.0,
+								1.0,
+								false
+							)
+						) * (asteroid.size / (octave + 1.0).pow(2.25))
 
 						fullNoise += offset
 					}
@@ -247,8 +252,8 @@ class AsteroidPopulator() : BlockPopulator() {
 
 		val blockPalette: Palette = weightedPalette[paletteSample]
 
-		val size = random.nextDouble(5.0, configuration.maxAsteroidSize)
-		val octaves = configuration.maxAsteroidOctaves
+		val size = random.nextDouble(5.0, 20.0)
+		val octaves = floor(5 * 0.95.pow(size)).toInt()
 
 		return Asteroid(location, blockPalette, size, octaves)
 	}
