@@ -2,9 +2,13 @@ package gutin.spacegenerator.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Subcommand
+import gutin.spacegenerator.SpaceGenerator
+import gutin.spacegenerator.generation.configuration.AsteroidConfiguration
 import gutin.spacegenerator.generation.populators.AsteroidPopulator
+import gutin.spacegenerator.loadConfiguration
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.ChunkPos
 import org.bukkit.World
@@ -15,6 +19,8 @@ import java.util.Random
 
 @CommandAlias("asteroid")
 class AsteroidCommand : BaseCommand() {
+    private val configuration: AsteroidConfiguration =
+        loadConfiguration(SpaceGenerator.SpaceGenerator.dataFolder.resolve("asteroids"), "asteroid_configuration.conf")
 
     @Suppress("unused")
     @CommandPermission("spacegenerator.regenerate")
@@ -33,6 +39,41 @@ class AsteroidCommand : BaseCommand() {
             for (z in sender.chunk.z - range..sender.chunk.z + range) {
                 postGenerateAsteroids(sender.world, ChunkPos(x, z))
             }
+        }
+    }
+
+    @Suppress("unused")
+    @CommandPermission("spacegenerator.regenerate")
+    @Subcommand("create custom asteroid")
+    @CommandCompletion("@nothing|size|index|octaves")
+    fun onCreateCustom(sender: Player, size: Double, index: Int, octaves: Int) {
+        val chunkPos = ChunkPos(sender.chunk.x, sender.chunk.z)
+        val world = sender.world
+
+        val craftWorld = (world as CraftWorld).handle
+
+        val populator: AsteroidPopulator =
+            craftWorld.generator.getDefaultPopulators(world)
+                .find { it is AsteroidPopulator } as? AsteroidPopulator ?: return
+
+        val asteroid = AsteroidPopulator.Asteroid(
+            BlockPos(
+                sender.location.x,
+                sender.location.y,
+                sender.location.z
+            ),
+            configuration.blockPalettes[index],
+            size,
+            octaves
+        )
+
+        populator.apply {
+            this.postGenerateAsteroid(
+                world,
+                chunkPos.x,
+                chunkPos.z,
+                asteroid
+            )
         }
     }
 

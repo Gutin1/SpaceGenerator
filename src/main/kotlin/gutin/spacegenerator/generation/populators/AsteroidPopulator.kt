@@ -12,6 +12,7 @@ import gutin.spacegenerator.generation.configuration.Palette
 import gutin.spacegenerator.loadConfiguration
 import net.minecraft.core.BlockPos
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.LimitedRegion
 import org.bukkit.generator.WorldInfo
@@ -141,6 +142,83 @@ class AsteroidPopulator() : BlockPopulator() {
 						weightedMaterials[paletteSample] // Weight the list by adding duplicate entries, then sample it for the material.
 
 					limitedRegion.setType(x, y, z, material)
+				}
+			}
+		}
+	}
+
+	fun postGenerateAsteroid(
+		world: World,
+		chunkX: Int,
+		chunkZ: Int,
+		asteroid: Asteroid,
+	) {
+		val noise = SimplexOctaveGenerator(Random(world.seed), 1)
+
+		val worldX = chunkX * 16
+		val worldZ = chunkZ * 16
+
+		val blockPos = BlockPos.MutableBlockPos(worldX, 0, worldZ)
+
+		for (x in worldX - (asteroid.size * 1.5).toInt()..worldX + 15 + (asteroid.size * 1.5).toInt()) {
+			val xDouble = x.toDouble()
+			val xSquared = (xDouble - asteroid.location.x) * (xDouble - asteroid.location.x)
+			blockPos.x = x
+
+			for (z in worldZ - (asteroid.size * 1.5).toInt()..worldZ + 15 + (asteroid.size * 1.5).toInt()) {
+				val zDouble = z.toDouble()
+				val zSquared = (zDouble - asteroid.location.z) * (zDouble - asteroid.location.z)
+				blockPos.z = z
+
+				for (y in (asteroid.location.y - (1.5 * asteroid.size)).toInt() until (asteroid.location.y + (1.5 * asteroid.size)).toInt()) {
+					val yDouble = y.toDouble()
+					val ySquared = (yDouble - asteroid.location.y) * (yDouble - asteroid.location.y)
+					blockPos.y = y
+
+					noise.setScale(0.15)
+
+					var fullNoise =
+						0.0 // Full noise is used as the radius of the asteroid, and it is offset by the noise of each block pos.
+
+					for (octave in 0..asteroid.octaves) {
+						noise.setScale(0.015 * (octave + 1.0).pow(2.25))
+
+						val offset = abs(noise.noise(
+							xDouble,
+							yDouble,
+							zDouble,
+							0.0,
+							1.0,
+							false
+						) * (2 / (octave + 1)) * (asteroid.size / 1.5))
+
+						fullNoise += offset
+					}
+
+					if (
+						xSquared +
+						ySquared +
+						zSquared
+						> (fullNoise).pow(2)
+					) continue // Continue if block is not inside any asteroid
+
+					val weightedMaterials = materialWeights(asteroid.palette)
+
+					noise.setScale(0.15)
+
+					val paletteSample = (((noise.noise(
+						worldX + xDouble,
+						yDouble,
+						worldZ + zDouble,
+						1.0,
+						1.0,
+						true
+					) + 1) / 2) * (weightedMaterials.size - 1)).toInt() // Calculate a noise pattern with a minimum at zero, and a max peak of the size of the materials list.
+
+					val material =
+						weightedMaterials[paletteSample] // Weight the list by adding duplicate entries, then sample it for the material.
+
+					world.setBlockData(x, y, z, material.createBlockData())
 				}
 			}
 		}
