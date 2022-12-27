@@ -6,10 +6,9 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Subcommand
 import gutin.spacegenerator.generation.populators.AsteroidPopulator
 import net.minecraft.core.BlockPos
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.ChunkPos
-import net.minecraft.world.level.WorldGenLevel
 import org.bukkit.World
+import org.bukkit.craftbukkit.v1_19_R2.CraftWorld
 import org.bukkit.craftbukkit.v1_19_R2.generator.CraftLimitedRegion
 import org.bukkit.entity.Player
 import java.util.Random
@@ -45,7 +44,7 @@ class AsteroidCommand : BaseCommand() {
 
         val asteroidRandom = Random(chunkPos.x + (chunkPos.z) + world.seed)
 
-        val craftWorld =  (world as ServerLevel).level
+        val craftWorld = (world as CraftWorld).handle
 
         val populator: AsteroidPopulator =
             craftWorld.generator.getDefaultPopulators(world)
@@ -81,10 +80,10 @@ class AsteroidCommand : BaseCommand() {
 
         if (asteroids.isEmpty()) return
 
-        val craftWorld = (world as WorldGenLevel)
+        val craftWorld = (world as CraftWorld).handle
 
         val populator: AsteroidPopulator =
-            (world as ServerLevel).level.generator.getDefaultPopulators(world)
+            craftWorld.generator.getDefaultPopulators(world)
                 .find { it is AsteroidPopulator } as? AsteroidPopulator ?: return
 
         val limitedRegion = CraftLimitedRegion(craftWorld, chunkPos)
