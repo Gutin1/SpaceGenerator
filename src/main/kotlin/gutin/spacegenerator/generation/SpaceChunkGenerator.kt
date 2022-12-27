@@ -2,17 +2,19 @@ package gutin.spacegenerator.generation
 
 import java.util.Random
 import gutin.spacegenerator.generation.populators.AsteroidPopulator
+import gutin.spacegenerator.generation.populators.OrePopulator
 import org.bukkit.World
 import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.ChunkGenerator
 import org.bukkit.generator.WorldInfo
 
 class SpaceChunkGenerator : ChunkGenerator() {
+
 	override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
 	}
 
 	override fun getDefaultPopulators(world: World): MutableList<BlockPopulator> {
-		return mutableListOf(AsteroidPopulator())
+		return mutableListOf(AsteroidPopulator(), OrePopulator())
 	}
 
 	override fun shouldGenerateSurface(): Boolean {

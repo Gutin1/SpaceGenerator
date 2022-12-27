@@ -20,11 +20,11 @@ class SpaceGenerator : JavaPlugin() {
 
     override fun onDisable() {}
 
-    override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator? {
+    override fun getDefaultWorldGenerator(worldName: String, id: String?): ChunkGenerator {
         return SpaceChunkGenerator()
     }
 
-    override fun getDefaultBiomeProvider(worldName: String, id: String?): BiomeProvider? {
+    override fun getDefaultBiomeProvider(worldName: String, id: String?): BiomeProvider {
         return SpaceBiomeProvider()
     }
 }

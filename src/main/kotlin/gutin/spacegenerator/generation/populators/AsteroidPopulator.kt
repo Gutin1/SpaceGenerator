@@ -18,7 +18,6 @@ import org.bukkit.generator.WorldInfo
 import org.bukkit.util.noise.SimplexOctaveGenerator
 
 class AsteroidPopulator() : BlockPopulator() {
-
 	// default asteroid configuration values
 	private val configuration: AsteroidConfiguration =
 		loadConfiguration(SpaceGenerator.SpaceGenerator.dataFolder.resolve("asteroids"), "asteroid_configuration.conf")
@@ -63,18 +62,18 @@ class AsteroidPopulator() : BlockPopulator() {
 
 			if (asteroidY - asteroid.size < worldInfo.minHeight) continue
 
-			placeAsteroid(worldInfo, chunkX, chunkZ, limitedRegion, asteroid)
+			placeAsteroid(worldInfo.seed, chunkX, chunkZ, limitedRegion, asteroid)
 		}
 	}
 
 	private fun placeAsteroid(
-		worldInfo: WorldInfo,
+		seed: Long,
 		chunkX: Int,
 		chunkZ: Int,
 		limitedRegion: LimitedRegion,
 		asteroid: Asteroid,
 	) {
-		val noise = SimplexOctaveGenerator(Random(worldInfo.seed), 1)
+		val noise = SimplexOctaveGenerator(Random(seed), 1)
 
 		val worldX = chunkX * 16
 		val worldZ = chunkZ * 16
@@ -196,7 +195,6 @@ class AsteroidPopulator() : BlockPopulator() {
 	/**
 	 * Weights the list of Palettes in the configuration by adding duplicate entries based on the weight.
 	 */
-
 	private fun paletteWeights(): List<Palette> {
 		val weightedList = mutableListOf<Palette>()
 
