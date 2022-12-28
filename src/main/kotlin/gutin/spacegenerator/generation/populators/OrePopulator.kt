@@ -18,10 +18,34 @@ open class OrePopulator : BlockPopulator() {
     private val configuration: AsteroidConfiguration =
         loadConfiguration(SpaceGenerator.SpaceGenerator.dataFolder.resolve("asteroids"), "asteroid_configuration.conf")
 
-    private val asteroidBlocks: MutableSet<Material> = mutableSetOf()
-    private val weightedOres = oreWeights()
+    companion object {
+        val asteroidBlocks: MutableSet<Material> = mutableSetOf()
+        val oreMap: MutableMap<String, BlockData> = mutableMapOf()
 
-    private val oreMap: MutableMap<String, BlockData> = mutableMapOf()
+        fun getSphereBlocks(radius: Int, origin: BlockPos): List<BlockPos> {
+            if (radius == 1) return listOf(origin) // bypass the rest of this if it's useless
+
+            val circleBlocks = mutableListOf<BlockPos>()
+            val upperBoundSquared = radius * radius
+
+            for (x in origin.x - radius..origin.x + radius) {
+                for (y in origin.y - radius..origin.y + radius) {
+                    for (z in origin.z - radius..origin.z + radius) {
+                        val distance =
+                            ((origin.x - x) * (origin.x - x) + (origin.z - z) * (origin.z - z) + (origin.y - y) * (origin.y - y)).toDouble()
+
+                        if (distance < upperBoundSquared) {
+                            circleBlocks.add(BlockPos(x, y, z))
+                        }
+                    }
+                }
+            }
+
+            return circleBlocks
+        }
+    }
+
+    private val weightedOres = oreWeights()
 
     init {
         configuration.blockPalettes.forEach { asteroidBlocks.addAll((it.materials.keys)) }
@@ -86,25 +110,13 @@ open class OrePopulator : BlockPopulator() {
         return weightedList
     }
 
-    private fun getSphereBlocks(radius: Int, origin: BlockPos): List<BlockPos> {
-        if (radius == 1) return listOf(origin) // bypass the rest of this if it's useless
-
-        val circleBlocks = mutableListOf<BlockPos>()
-        val upperBoundSquared = radius * radius
-
-        for (x in origin.x - radius..origin.x + radius) {
-            for (y in origin.y - radius..origin.y + radius) {
-                for (z in origin.z - radius..origin.z + radius) {
-                    val distance =
-                        ((origin.x - x) * (origin.x - x) + (origin.z - z) * (origin.z - z) + (origin.y - y) * (origin.y - y)).toDouble()
-
-                    if (distance < upperBoundSquared) {
-                        circleBlocks.add(BlockPos(x, y, z))
-                    }
-                }
-            }
-        }
-
-        return circleBlocks
+    fun storeAsteroid() {
+        val list = listOf<PlacedOre>()
     }
+
+    data class PlacedOre(
+        val material: BlockData,
+        val blobSize: Int,
+        val location: BlockPos
+    )
 }
