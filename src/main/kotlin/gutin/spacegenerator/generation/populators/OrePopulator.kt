@@ -53,11 +53,11 @@ open class OrePopulator : BlockPopulator() {
                     origin.z))
             ) {
                 continue
-            } // Future proofing, Return if it's not trying to replace an asteroid block
+            } // Quickly move on if it's not in an asteroid
 
             val ore = weightedOres[random.nextInt(0, weightedOres.size - 1)]
 
-            val blobSize = random.nextInt(1, ore.maxBlobSize)
+            val blobSize = random.nextInt(0, ore.maxBlobSize).coerceAtLeast(1)
 
             val oreBlocks = getSphereBlocks(blobSize, origin = origin)
 
