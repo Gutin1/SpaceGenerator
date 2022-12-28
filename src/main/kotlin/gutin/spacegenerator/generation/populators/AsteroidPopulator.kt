@@ -38,12 +38,11 @@ class AsteroidPopulator : BlockPopulator() {
 		val worldX = chunkX * 16
 		val worldZ = chunkZ * 16
 
-		val chunkDensity =
-			(1 * ceil(parseDensity(worldInfo, worldX.toDouble(), worldInfo.maxHeight / 2.0, worldZ.toDouble())).toInt())
+		val chunkDensity = parseDensity(worldInfo, worldX.toDouble(), worldInfo.maxHeight / 2.0, worldZ.toDouble())
 
 		// Generate a number of random asteroids in a chunk, proportional to the density in a portion of the chunk. Allows densities of X>1 asteroid per chunk.
-		for (count in 0..chunkDensity) {
-			val asteroidRandom = Random(chunkX + (chunkZ * count) + worldInfo.seed)
+		for (count in 0..ceil(chunkDensity).toInt()) {
+			val asteroidRandom = Random(System.currentTimeMillis() + worldInfo.seed)
 
 			//Random coordinate generation.
 			val asteroidX = asteroidRandom.nextInt(0, 15) + worldX
@@ -51,7 +50,10 @@ class AsteroidPopulator : BlockPopulator() {
 			val asteroidY = asteroidRandom.nextInt(worldInfo.minHeight + 10, worldInfo.maxHeight - 10)
 
 			// random number out of 100, chance of asteroid's generation. For use in selection.
-			val chance = abs((abs(BlockPos(asteroidX, asteroidY, asteroidZ).hashCode()) % 200.0) - 100.0)
+			val chance = random.nextDouble(100.0)
+//			val chance = abs((abs(BlockPos(asteroidX, asteroidY, asteroidZ).hashCode()) % 200.0) - 100.0)
+
+			println("chance: $chance, density: ${chunkDensity * 10}")
 
 			// Selects some asteroids that are generated. Allows for densities of 0<X<1 asteroids per chunk.
 			if (chance > (chunkDensity * 10)) continue
@@ -231,10 +233,6 @@ class AsteroidPopulator : BlockPopulator() {
 		storeAsteroid(asteroid)
 	}
 
-	fun storeAsteroid(asteroid: Asteroid) {
-
-	}
-
 	fun generateAsteroid(location: BlockPos, random: Random): Asteroid {
 		val noise = SimplexOctaveGenerator(random, 1)
 
@@ -295,6 +293,10 @@ class AsteroidPopulator : BlockPopulator() {
 		}
 
 		return weightedList
+	}
+
+	fun storeAsteroid(asteroid: Asteroid) {
+
 	}
 
 	data class Asteroid(
