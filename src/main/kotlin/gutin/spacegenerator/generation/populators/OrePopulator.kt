@@ -95,6 +95,8 @@ open class OrePopulator : BlockPopulator() {
 
                 oreMap[ore.material]?.let { limitedRegion.setBlockData(block.x, block.y, block.z, it) }
 			}
+
+            storeOreBlob(ore, origin)
         }
     }
 
@@ -110,7 +112,7 @@ open class OrePopulator : BlockPopulator() {
         return weightedList
     }
 
-    fun storeAsteroid() {
+    private fun storeOreBlob(ore: Ore, origin: BlockPos) {
         val list = listOf<PlacedOre>()
     }
 

@@ -51,34 +51,36 @@ class AsteroidCommand : BaseCommand() {
     @Subcommand("create ore")
     @CommandCompletion("Optional:Range")
     fun onCreateOres(sender: Player, range: Int) {
-        val chunkPos = ChunkPos(sender.chunk.x, sender.chunk.z)
         val world = sender.world
-
         val craftWorld = (world as CraftWorld).handle
-
         val populator: OrePopulator =
             craftWorld.generator.getDefaultPopulators(world)
                 .find { it is OrePopulator } as? OrePopulator ?: return
 
-        val limitedRegion = CraftLimitedRegion(craftWorld, chunkPos)
-
         val oreRandom = Random(System.currentTimeMillis() + world.seed)
+
+        var chunkCount = 0
 
         for (x in sender.chunk.x - range..sender.chunk.x + range) {
             for (z in sender.chunk.z - range..sender.chunk.z + range) {
+                val chunkPos = ChunkPos(x, z)
+                val limitedRegion = CraftLimitedRegion(craftWorld, chunkPos)
+
                 populator.apply {
                     this.populate(
                         sender.world,
                         oreRandom,
-                        chunkPos.x,
-                        chunkPos.z,
+                        x,
+                        z,
                         limitedRegion
                     )
                 }
+
+                chunkCount += 1
             }
         }
 
-        sender.sendRichMessage("<#7fff7f>Success!")
+        sender.sendRichMessage("<#7fff7f>Success! Populated $chunkCount chunks with new ores!")
     }
 
     @Suppress("unused")

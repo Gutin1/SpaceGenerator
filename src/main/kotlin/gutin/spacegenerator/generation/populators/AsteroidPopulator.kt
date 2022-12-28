@@ -227,9 +227,11 @@ class AsteroidPopulator : BlockPopulator() {
 				}
 			}
 		}
+
+		storeAsteroid(asteroid)
 	}
 
-	fun storeAsteroid() {
+	fun storeAsteroid(asteroid: Asteroid) {
 
 	}
 
