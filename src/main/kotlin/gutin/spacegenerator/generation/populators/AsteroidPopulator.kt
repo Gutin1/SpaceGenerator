@@ -241,14 +241,7 @@ class AsteroidPopulator : BlockPopulator() {
 		noise.setScale(0.15)
 
 		val weightedPalette = paletteWeights()
-		val paletteSample = (((noise.noise(
-			location.x.toDouble(),
-			location.y.toDouble(),
-			location.z.toDouble(),
-			1.0,
-			1.0,
-			true
-		) + 1) / 2) * (weightedPalette.size - 1)).toInt()
+		val paletteSample = random.nextInt(weightedPalette.size)
 
 		val blockPalette: Palette = weightedPalette[paletteSample]
 

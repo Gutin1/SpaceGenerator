@@ -24,11 +24,13 @@ class AsteroidCommand : BaseCommand() {
 
     @Suppress("unused")
     @CommandPermission("spacegenerator.regenerate")
-    @Subcommand("regenerate chunk")
+    @Subcommand("regenerate single")
     fun onRegenerateSingle(sender: Player) {
         val chunkPos = ChunkPos(sender.chunk.x, sender.chunk.z)
 
         postGenerateAsteroids(sender.world, chunkPos)
+
+        sender.sendRichMessage("<#7fff7f>Success!")
     }
 
     @Suppress("unused")
@@ -40,6 +42,8 @@ class AsteroidCommand : BaseCommand() {
                 postGenerateAsteroids(sender.world, ChunkPos(x, z))
             }
         }
+
+        sender.sendRichMessage("<#7fff7f>Success!")
     }
 
     @Suppress("unused")
@@ -47,6 +51,11 @@ class AsteroidCommand : BaseCommand() {
     @Subcommand("create custom")
     @CommandCompletion("size index octaves")
     fun onCreateCustom(sender: Player, size: Double, index: Int, octaves: Int) {
+        if (!IntRange(0, configuration.blockPalettes.size).contains(index)) {
+            sender.sendRichMessage("<red>ERROR: index out of range: 0..${configuration.blockPalettes.size}")
+            return
+        }
+
         val chunkPos = ChunkPos(sender.chunk.x, sender.chunk.z)
         val world = sender.world
 
@@ -75,6 +84,8 @@ class AsteroidCommand : BaseCommand() {
                 asteroid
             )
         }
+
+        sender.sendRichMessage("<#7fff7f>Success!")
     }
 
     @Suppress("unused")
@@ -114,6 +125,7 @@ class AsteroidCommand : BaseCommand() {
             )
         }
 
+        sender.sendRichMessage("<#7fff7f>Success!")
     }
 
     private fun postGenerateAsteroids(world: World, chunkPos: ChunkPos) {
