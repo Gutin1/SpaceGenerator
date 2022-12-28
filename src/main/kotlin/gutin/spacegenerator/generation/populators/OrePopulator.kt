@@ -5,13 +5,15 @@ import gutin.spacegenerator.generation.configuration.AsteroidConfiguration
 import gutin.spacegenerator.generation.configuration.Ore
 import gutin.spacegenerator.loadConfiguration
 import net.minecraft.core.BlockPos
+import org.bukkit.Bukkit.createBlockData
 import org.bukkit.Material
+import org.bukkit.block.data.BlockData
 import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.LimitedRegion
 import org.bukkit.generator.WorldInfo
 import java.util.Random
 
-open class OrePopulator() : BlockPopulator() {
+open class OrePopulator : BlockPopulator() {
     // default asteroid configuration values
     private val configuration: AsteroidConfiguration =
         loadConfiguration(SpaceGenerator.SpaceGenerator.dataFolder.resolve("asteroids"), "asteroid_configuration.conf")
@@ -19,8 +21,12 @@ open class OrePopulator() : BlockPopulator() {
     private val asteroidBlocks: MutableSet<Material> = mutableSetOf()
     private val weightedOres = oreWeights()
 
+    private val oreMap: MutableMap<String, BlockData> = mutableMapOf()
+
     init {
         configuration.blockPalettes.forEach { asteroidBlocks.addAll((it.materials.keys)) }
+
+        configuration.ores.forEach { oreMap[it.material] = createBlockData(it.material) }
     }
 
     override fun populate(
@@ -56,12 +62,14 @@ open class OrePopulator() : BlockPopulator() {
             val oreBlocks = getSphereBlocks(blobSize, origin = origin)
 
 			for (block in oreBlocks) {
+                if (!limitedRegion.isInRegion(block.x, block.y, block.z)) continue
+
                 if (!asteroidBlocks.contains(limitedRegion.getType(block.x,
                         block.y,
                         block.z))
                 ) continue
 
-				limitedRegion.setType(block.x, block.y, block.z, ore.material)
+                oreMap[ore.material]?.let { limitedRegion.setBlockData(block.x, block.y, block.z, it) }
 			}
         }
     }
